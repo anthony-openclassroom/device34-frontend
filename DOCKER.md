@@ -10,7 +10,7 @@
 docker compose up -d
 ```
 
-L'application est accessible sur **http://localhost**
+L'application est accessible sur **http://localhost** 
 
 ---
 

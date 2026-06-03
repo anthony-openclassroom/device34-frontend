@@ -12,9 +12,21 @@ spec:
       labels:
         app: olympic-games-app
     spec:
+      # Désactive le montage automatique du service account token
+      # Le container n'a pas besoin d'accéder à l'API Kubernetes (kubernetes:S6865)
+      automountServiceAccountToken: false
       containers:
-      - name: olympic-games-app
-        # TODO: add the image of the application from the gitlab registry
-        ports:
-        - containerPort: 80
-      # TODO: define imagePullSecrets to use a docker-registry secret and authorize Kubenetes 
+        - name: olympic-games-app
+          # TODO: add the image of the application from the gitlab registry
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              # Plafond mémoire obligatoire pour éviter qu'un container
+              # consomme toutes les ressources du nœud (kubernetes:S6864)
+              memory: "128Mi"
+              cpu: "200m"
+      # TODO: define imagePullSecrets to use a docker-registry secret and authorize Kubernetes

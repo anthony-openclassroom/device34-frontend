@@ -38,5 +38,17 @@ COPY nginx/nginx.conf /etc/nginx/nginx.conf
 # et le place dans /app, chemin attendu par nginx.conf (directive root /app)
 COPY --from=builder /app/dist/olympic-games-starter/browser /app
 
+# Passage en user non-root pour limiter la surface d'attaque.
+# nginx:nginx est l'utilisateur système inclus dans l'image nginx:alpine.
+# On doit chown /app et les répertoires système utilisés par nginx au runtime.
+RUN chown -R nginx:nginx /app \
+    && chown -R nginx:nginx /var/cache/nginx \
+    && chown -R nginx:nginx /var/log/nginx \
+    && touch /var/run/nginx.pid \
+    && chown -R nginx:nginx /tmp
+
+# Bascule sur l'utilisateur non-root pour l'exécution du conteneur
+USER nginx
+
 # Documente le port exposé par le conteneur (Nginx écoute sur 80)
 EXPOSE 80

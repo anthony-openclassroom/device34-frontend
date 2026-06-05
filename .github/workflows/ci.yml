@@ -12,7 +12,8 @@ jobs:
     with:
       project-type: angular
     permissions:
-      contents: write
+      contents: read
+      checks: write
 
   build:
     needs: test
